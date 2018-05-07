@@ -28,31 +28,31 @@
    Do not forget to define the radio type correctly in config.h.
 
  *******************************************************************************/
+
 #include <lmic.h>
 #include <hal/hal.h>
 #include <SPI.h>
-#include <LowPower.h>
-#include  "adcvcc.h"
-
-#define NORMALINTERVAL 900 // 15 minutes (normal) 
-int interval = NORMALINTERVAL;
-
-byte LMIC_transmitted = 0;
-int LMIC_event_Timeout = 0;
+#include "adcvcc.h"
 
 
 // LoRaWAN NwkSKey, network session key (formato MSB)
 // This is the default Semtech key, which is used by the early prototype TTN
 // network.
-static const PROGMEM u1_t NWKSKEY[16] = { };
+static const PROGMEM u1_t NWKSKEY[16] = {  };
 
 // LoRaWAN AppSKey, application session key (formato MSB)
 // This is the default Semtech key, which is used by the early prototype TTN
 // network.
-static const u1_t PROGMEM APPSKEY[16] = { };
+static const u1_t PROGMEM APPSKEY[16] = {  };
 
 // LoRaWAN end-device address (DevAddr) (formato MSB)
-static const u4_t DEVADDR = 0x0000 ; // <-- Change this address for every node!
+static const u4_t DEVADDR = 0x ; // <-- Change this address for every node!
+
+
+ 
+
+
+
 
 // These callbacks are only used in over-the-air activation, so they are
 // left empty here (we cannot leave them out completely unless
@@ -66,8 +66,8 @@ static osjob_t sendjob;
 
 // Schedule TX every this many seconds (might become longer due to duty
 // cycle limitations).
-const unsigned TX_INTERVAL = 60;
-
+const unsigned TX_INTERVAL = 20;
+/*
 // Pin mapping
 const lmic_pinmap lmic_pins = {
   .nss = 10,
@@ -75,7 +75,14 @@ const lmic_pinmap lmic_pins = {
   .rst = 9,
   .dio = {2, 7, 8},
 };
-
+*/
+// Pin mapping
+const lmic_pinmap lmic_pins = {
+  .nss = 10,
+  .rxtx = LMIC_UNUSED_PIN,
+  .rst = 9,
+  .dio = {2, 6, 7},
+};
 
 
 
@@ -165,8 +172,7 @@ void onEvent (ev_t ev) {
         }
       */
       // Schedule next transmission
-      //os_setTimedCallback(&sendjob, os_getTime() + sec2osticks(TX_INTERVAL), do_send);
-      LMIC_transmitted = 1;
+      os_setTimedCallback(&sendjob, os_getTime() + sec2osticks(TX_INTERVAL), do_send);
       break;
     case EV_LOST_TSYNC:
       Serial.println(F("EV_LOST_TSYNC"));
@@ -211,106 +217,17 @@ void do_send(osjob_t* j) {
   }
   // Next TX is scheduled after TX_COMPLETE event.
 }
-void do_send_abierta(osjob_t* j) {
-  // Check if there is not a current TX/RX job running
-  if (LMIC.opmode & OP_TXRXPEND) {
-    Serial.println(F("OP_TXRXPEND, not sending"));
-  } else {
-    // Prepare upstream data transmission at the next possible time.
-    int batt = (int)(readVcc() / 100);  // readVCC returns  mVolt need just 100mVolt steps
-    byte batvalue = (byte)batt; // no problem putting it into a int.
-    unsigned char carga_de_pago[7];
-    carga_de_pago[0] = 0x03;
-    carga_de_pago[1] = 0x02;//Entrada analógica
-    int16_t help;
-    help = batvalue * 10;
-    carga_de_pago[2] = help >> 8;
-    carga_de_pago[3] = help;
-    carga_de_pago[4] = 0x04;
-    carga_de_pago[5] = 0x00;//Entrada digital
-    carga_de_pago[6] = 0x01;
 
-    LMIC_setTxData2(1, carga_de_pago, sizeof(carga_de_pago), 0);
-    Serial.println(F("Packet queued"));
-  }
-}
-void do_send_cerrada(osjob_t* j) {
-  // Check if there is not a current TX/RX job running
-  if (LMIC.opmode & OP_TXRXPEND) {
-    Serial.println(F("OP_TXRXPEND, not sending"));
-  } else {
-    // Prepare upstream data transmission at the next possible time.
-    int batt = (int)(readVcc() / 100);  // readVCC returns  mVolt need just 100mVolt steps
-    byte batvalue = (byte)batt; // no problem putting it into a int.
-    unsigned char carga_de_pago[7];
-    carga_de_pago[0] = 0x03;
-    carga_de_pago[1] = 0x02;//Entrada analógica
-    int16_t help;
-    help = batvalue * 10;
-    carga_de_pago[2] = help >> 8;
-    carga_de_pago[3] = help;
-    carga_de_pago[4] = 0x04;
-    carga_de_pago[5] = 0x00;//Entrada digital
-    carga_de_pago[6] = 0x00;
-
-    LMIC_setTxData2(1, carga_de_pago, sizeof(carga_de_pago), 0);
-    Serial.println(F("Packet queued"));
-  }
-}
-void puertaAbierta() {
-  os_setCallback (&sendjob, do_send_abierta);
-}
-void puertaCerrada() {
-  os_setCallback (&sendjob, do_send_cerrada);
-
-}
-bool bootFromBrownOut = false;
-
-// shows the bootstatus on serial output and set bootFromBrownout flag.
-void showBootStatus(uint8_t _mcusr)
-{
-  Serial.print(F("mcusr = "));
-  Serial.print(_mcusr, HEX);
-  Serial.print(F(" > "));
-  if (_mcusr & (1 << WDRF))
-  {
-    Serial.print(F(" WDR"));
-    _mcusr &= ~(1 << WDRF);
-  }
-  if (_mcusr & (1 << BORF))
-  {
-    Serial.print(F(" BOR"));
-    _mcusr &= ~(1 << BORF);
-    bootFromBrownOut = true;
-  }
-  if (_mcusr & (1 << EXTRF))
-  {
-    Serial.print(F(" EXTF"));
-    _mcusr &= ~(1 << EXTRF);
-  }
-  if (_mcusr & (1 << PORF))
-  {
-    Serial.print(F(" POR"));
-    _mcusr &= ~(1 << PORF);
-  }
-  if (_mcusr != 0x00)
-  {
-    // It should never enter here
-    Serial.print(F(" ??"));
-  }
-  Serial.println("");
-}
 void setup() {
-  uint8_t mcusr = MCUSR;
-  MCUSR = 0;
-
   Serial.begin(115200);
-  Serial.println(F("Boot"));
+  Serial.println(F("Starting"));
 
-  showBootStatus(mcusr);
-
-
-  pinMode(3, INPUT_PULLUP);
+#ifdef VCC_ENABLE
+  // For Pinoccio Scout boards
+  pinMode(VCC_ENABLE, OUTPUT);
+  digitalWrite(VCC_ENABLE, HIGH);
+  delay(1000);
+#endif
 
   // LMIC init
   os_init();
@@ -374,72 +291,11 @@ void setup() {
   //LMIC_setDrTxpow(DR_SF7,14);
 
   forceTxSingleChannelDr();
-  LMIC_setClockError(MAX_CLOCK_ERROR * 1 / 100);
-
+  LMIC_setClockError(MAX_CLOCK_ERROR * 1/ 100);
+  // Start job
+  do_send(&sendjob);
 }
 
 void loop() {
-  // Allow wake up pin to trigger interrupt on low.
-  //usar uno u otro en función del tipo de reed (mejor el segundo porque consume menos)
-  //attachInterrupt(digitalPinToInterrupt(3), puertaAbierta, RISING);
-  attachInterrupt(digitalPinToInterrupt(3), puertaAbierta, FALLING);
-
-  // Enter power down state with ADC disabled and BOD enabled.
-  // Wake up when wake up pin is rising.
-  Serial.println("A dormir");
-  delay(100);
-  LowPower.powerDown(SLEEP_FOREVER, ADC_OFF, BOD_ON);
-  Serial.println("Puerta abierta");
-  // Disable external pin interrupt on wake up pin.
-  detachInterrupt(0);
-
-  // Do something here
-  if (!bootFromBrownOut)  {
-    // Wait for response of the queued message (check if message is send correctly)
-    os_runloop_once();
-    // Continue until message is transmitted correctly
-    LMIC_event_Timeout = 60 * 100; // 60 * 100 times 10mSec = 60 seconds
-    while (LMIC_transmitted != 1)    {
-      os_runloop_once();
-      // Add timeout counter when nothing happens:
-      delay(10);
-      if (LMIC_event_Timeout-- == 0)      {
-        // Timeout when there's no "EV_TXCOMPLETE" event after 60 seconds
-        Serial.println(F("ETO, msg not tx"));
-        break;
-      }
-    }
-    LMIC_transmitted = 0;
-    //Espero a que se cierre la puerta
-    //while (digitalRead(3) == 1) {}
-    while (digitalRead(3) == 0) {}
-    Serial.println("Puerta cerada");
-    puertaCerrada();
-    os_runloop_once();
-    // Continue until message is transmitted correctly
-    LMIC_event_Timeout = 60 * 100; // 60 * 100 times 10mSec = 60 seconds
-    while (LMIC_transmitted != 1)    {
-      os_runloop_once();
-      // Add timeout counter when nothing happens:
-      delay(10);
-      if (LMIC_event_Timeout-- == 0)      {
-        // Timeout when there's no "EV_TXCOMPLETE" event after 60 seconds
-        Serial.println(F("ETO, msg not tx"));
-        break;
-      }
-    }
-    LMIC_transmitted = 0;
-  }  else  {
-    Serial.println("X");
-  }
-  bootFromBrownOut = false;
-  /*
-    for (int i = 0; i < interval; i++)
-    {
-      i += 8 ; // no normal 1 second run but 8 second loops m.
-      // Enter power down state for 8 s with ADC and BOD module enabled
-      LowPower.powerDown(SLEEP_8S, ADC_OFF, BOD_ON);
-    }
-  */
-  Serial.println("-");
+  os_runloop_once();
 }
