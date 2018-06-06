@@ -194,7 +194,7 @@
 // Note: DO NOT use the first and the last line of the stucture, these should be empty strings and
 //	the first line in te struct is reserved for WifiManager.
 //
-#if 0
+#if 1
 // Wifi definitions
 // WPA is an array with SSID and password records. Set WPA size to number of entries in array
 // When using the WiFiManager, we will overwrite the first entry with the 
@@ -219,6 +219,13 @@ wpas wpa[] = {
 #define _LON -0.00
 #define _ALT 0
 
+#if GATEWAYNODE==1
+#define _DEVADDR { 0x26, 0x00, 0x00 0x00 }
+#define _APPSKEY { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }
+#define _NWKSKEY { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }
+#define _SENSOR_INTERVAL 300
+#endif
+
 #else
 // Place outside version control to avoid the risk of commiting it to github ;-)
 #include "config.h"
@@ -230,13 +237,6 @@ wpas wpa[] = {
 #define NTP_TIMEZONES	1					// How far is our Timezone from UTC (excl daylight saving/summer time)
 #define SECS_PER_HOUR	3600
 #define NTP_INTR 0							// Do NTP processing with interrupts or in loop();
-
-#if GATEWAYNODE==1
-#define _DEVADDR { 0x26, 0x00, 0x00 0x00 }
-#define _APPSKEY { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }
-#define _NWKSKEY { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }
-#define _SENSOR_INTERVAL 300
-#endif
 
 // Define the correct radio type that you are using
 #define CFG_sx1276_radio		
