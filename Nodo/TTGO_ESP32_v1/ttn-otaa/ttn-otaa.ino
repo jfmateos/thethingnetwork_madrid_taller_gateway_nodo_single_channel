@@ -289,7 +289,7 @@ void setup() {
     // Reset the MAC state. Session and pending data transfers will be discarded.
     LMIC_reset();
 
-	//Not working yet. Using OTAA node tries to connect on several channels
+	/*
 	LMIC_setupChannel (0, 868100000, DR_RANGE_MAP (DR_SF12, DR_SF7), BAND_CENTI);      // g-band
 	LMIC_setupChannel (1, 868100000, DR_RANGE_MAP (DR_SF12, DR_SF7), BAND_CENTI);      // g-band
 	LMIC_setupChannel (2, 868100000, DR_RANGE_MAP (DR_SF12, DR_SF7), BAND_CENTI);      // g-band
@@ -299,6 +299,7 @@ void setup() {
 	LMIC_setupChannel (6, 868100000, DR_RANGE_MAP (DR_SF12, DR_SF7), BAND_CENTI);      // g-band
 	LMIC_setupChannel (7, 868100000, DR_RANGE_MAP (DR_SF12, DR_SF7), BAND_CENTI);      // g-band
 	LMIC_setupChannel (8, 868100000, DR_RANGE_MAP (DR_SF12, DR_SF7), BAND_CENTI);      // g2-band
+	*/
 
     // TTN uses SF9 for its RX2 window.
 	LMIC.dn2Dr = DR_SF9;
