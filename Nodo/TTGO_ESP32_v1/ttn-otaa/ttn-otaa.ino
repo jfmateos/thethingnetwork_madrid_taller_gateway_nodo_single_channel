@@ -43,23 +43,33 @@
 U8X8_SSD1306_128X64_NONAME_SW_I2C u8x8 (/* clock=*/ 15, /* data=*/ 4, /* reset=*/ 16);
 #endif //OLED
 
+
+#if 1
 // This EUI must be in little-endian format, so least-significant-byte
 // first. When copying an EUI from ttnctl output, this means to reverse
 // the bytes. For TTN issued EUIs the last bytes should be 0xD5, 0xB3,
 // 0x70.
-static const u1_t PROGMEM APPEUI[8]= {0x8A, 0xF1, 0x00, 0xD0, 0x7E, 0xD5, 0xB3, 0x70};
-void os_getArtEui (u1_t* buf) { memcpy_P(buf, APPEUI, 8);}
+// Change this address for every node!
+static const u1_t PROGMEM APPEUI[8]= { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 
 // This should also be in little endian format, see above.
-static const u1_t PROGMEM DEVEUI[8]= {0x63, 0x34, 0x2E, 0xD8, 0x7C, 0x92, 0x56, 0x00};
-void os_getDevEui (u1_t* buf) { memcpy_P(buf, DEVEUI, 8);}
+// Change this address for every node!
+static const u1_t PROGMEM DEVEUI[8]= { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 
 // This key should be in big endian format (or, since it is not really a
 // number but a block of memory, endianness does not really apply). In
 // practice, a key taken from ttnctl can be copied as-is.
 // The key shown here is the semtech default key.
-static const u1_t PROGMEM APPKEY[16] = {0xC3, 0x1F, 0xBF, 0x03, 0x33, 0x58, 0x89, 0x33, 0xB5, 0x8C, 0x5A, 0x21, 0x5A, 0x26, 0x77, 0xE3};
-void os_getDevKey (u1_t* buf) {  memcpy_P(buf, APPKEY, 16);}
+// Change this address for every node!
+static const u1_t PROGMEM APPKEY[16] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+#else
+#include "config.h"
+#endif
+
+void os_getArtEui (u1_t* buf) { memcpy_P (buf, APPEUI, 8); }
+void os_getDevEui (u1_t* buf) { memcpy_P (buf, DEVEUI, 8); }
+void os_getDevKey (u1_t* buf) { memcpy_P (buf, APPKEY, 16); }
+
 
 static uint8_t mydata[] = "Hello, world!";
 static osjob_t sendjob;
@@ -82,7 +92,7 @@ void onEvent (ev_t ev) {
 	u8x8.setCursor (0, 3);
 	u8x8.printf ("%0x", LMIC.devaddr);
 	u8x8.setCursor (0, 5);
-	u8x8.printf ("TIME %lu", os_getTime ());
+	u8x8.printf ("RSSI %d SNR: %d", LMIC.rssi, LMIC.snr);
 #endif //OLED
 	Serial.print(": ");
     switch(ev) {
@@ -218,13 +228,20 @@ void onEvent (ev_t ev) {
 #endif //OLED
 			break;
         case EV_LINK_ALIVE:
-            Serial.println(F("EV_LINK_ALIVE "+ev));
+            Serial.println(F("EV_LINK_ALIVE "));
 #ifdef OLED
 			u8x8.drawString (0, 7, "EV_LINK_ALIVE");
 #endif //OLED
 			break;
+		case EV_TXSTART:
+			Serial.println (F("EV_TXSTART "));
+#ifdef OLED
+			//u8x8.drawString (0, 7, "EV_TXSTART   ");
+#endif //OLED
+			break;
          default:
-            Serial.println(F("Unknown event"));
+            Serial.print(F("Unknown event: "));
+			Serial.println (ev);
 #ifdef OLED
 			u8x8.printf ("UNKNOWN EVENT %d", ev);
 #endif //OLED
@@ -272,7 +289,7 @@ void setup() {
     // Reset the MAC state. Session and pending data transfers will be discarded.
     LMIC_reset();
 
-	//Not working yet. Using OTAA node tries to connect on several channels
+	/*
 	LMIC_setupChannel (0, 868100000, DR_RANGE_MAP (DR_SF12, DR_SF7), BAND_CENTI);      // g-band
 	LMIC_setupChannel (1, 868100000, DR_RANGE_MAP (DR_SF12, DR_SF7), BAND_CENTI);      // g-band
 	LMIC_setupChannel (2, 868100000, DR_RANGE_MAP (DR_SF12, DR_SF7), BAND_CENTI);      // g-band
@@ -282,6 +299,7 @@ void setup() {
 	LMIC_setupChannel (6, 868100000, DR_RANGE_MAP (DR_SF12, DR_SF7), BAND_CENTI);      // g-band
 	LMIC_setupChannel (7, 868100000, DR_RANGE_MAP (DR_SF12, DR_SF7), BAND_CENTI);      // g-band
 	LMIC_setupChannel (8, 868100000, DR_RANGE_MAP (DR_SF12, DR_SF7), BAND_CENTI);      // g2-band
+	*/
 
     // TTN uses SF9 for its RX2 window.
 	LMIC.dn2Dr = DR_SF9;

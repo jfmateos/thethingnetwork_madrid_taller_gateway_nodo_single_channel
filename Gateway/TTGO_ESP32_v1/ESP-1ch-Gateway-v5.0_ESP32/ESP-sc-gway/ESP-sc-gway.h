@@ -189,19 +189,35 @@
 //#define _THINGPORT 1700					// dash.westenberg.org:8057
 //#define _THINGSERVER "yourServer.com"		// Server URL of the LoRa-udp.js handler
 
+// Please fill in at least ONE SSID and password from your own WiFI network
+// below. This is needed to get the gateway working
+// Note: DO NOT use the first and the last line of the stucture, these should be empty strings and
+//	the first line in te struct is reserved for WifiManager.
+//
+#if 1
+// Wifi definitions
+// WPA is an array with SSID and password records. Set WPA size to number of entries in array
+// When using the WiFiManager, we will overwrite the first entry with the 
+// accesspoint we last connected to with WifiManager
+// NOTE: Structure needs at least one (empty) entry.
+//		So WPASIZE must be >= 1
+struct wpas {
+	char login[32];							// Maximum Buffer Size (and allocated memory)
+	char passw[64];
+};
+wpas wpa[] = {
+	{ "" , "" },							// Reserved for WiFi Manager
+{ "SSID1" , "PASS1" },
+{ "SSID2", "PASS2" },
+};
+
 // Gateway Ident definitions
-#define _DESCRIPTION "My ESP32 Gateway 868.1MHz SF7"
+#define _DESCRIPTION "1-Channel Gateway"
 #define _EMAIL "your@email.com"
 #define _PLATFORM "ESP32"
 #define _LAT 0.00
 #define _LON -0.00
 #define _ALT 0
-
-// ntp
-#define NTP_TIMESERVER "es.pool.ntp.org"	// Country and region specific
-#define NTP_TIMEZONES	1					// How far is our Timezone from UTC (excl daylight saving/summer time)
-#define SECS_PER_HOUR	3600
-#define NTP_INTR 0							// Do NTP processing with interrupts or in loop();
 
 #if GATEWAYNODE==1
 #define _DEVADDR { 0x26, 0x00, 0x00 0x00 }
@@ -209,6 +225,18 @@
 #define _NWKSKEY { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }
 #define _SENSOR_INTERVAL 300
 #endif
+
+#else
+// Place outside version control to avoid the risk of commiting it to github ;-)
+#include "config.h"
+
+#endif
+
+// ntp
+#define NTP_TIMESERVER "es.pool.ntp.org"	// Country and region specific
+#define NTP_TIMEZONES	1					// How far is our Timezone from UTC (excl daylight saving/summer time)
+#define SECS_PER_HOUR	3600
+#define NTP_INTR 0							// Do NTP processing with interrupts or in loop();
 
 // Define the correct radio type that you are using
 #define CFG_sx1276_radio		
@@ -222,33 +250,6 @@
 #define OLED_SCL 15							// GPIO5 / D1
 #define OLED_SDA 4							// GPIO4 / D2
 #define OLED_ADDR 0x3C						// Default 0x3C for 0.9", for 1.3" it is 0x78
-
-// Wifi definitions
-// WPA is an array with SSID and password records. Set WPA size to number of entries in array
-// When using the WiFiManager, we will overwrite the first entry with the 
-// accesspoint we last connected to with WifiManager
-// NOTE: Structure needs at least one (empty) entry.
-//		So WPASIZE must be >= 1
-struct wpas {
-	char login[32];							// Maximum Buffer Size (and allocated memory)
-	char passw[64];
-};
-
-// Please fill in at least ONE SSID and password from your own WiFI network
-// below. This is needed to get the gateway working
-// Note: DO NOT use the first and the last line of the stucture, these should be empty strings and
-//	the first line in te struct is reserved for WifiManager.
-//
-#if 1
-wpas wpa[] = {
-	{ "" , "" },							// Reserved for WiFi Manager
-    { "SSID1", "PASSWD1" },
-	{ "SSID2", "PASSWD2" }
-};
-#else
-// Place outside version control to avoid the risk of commiting it to github ;-)
-#include "wpa.h"
-#endif
 
 // For asserting and testing the following defines are used.
 //
