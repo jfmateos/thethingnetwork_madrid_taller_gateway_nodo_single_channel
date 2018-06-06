@@ -1,3 +1,8 @@
-Nodo/TTGO_ESP32_v1/ttn-otaa/Release/
-Nodo/TTGO_ESP32_v1/ttn-abp/Release/
 **/config.h
+*.sln
+*.vcxproj
+*.filters
+*.user
+**/.vs
+**/__vm
+**/Release
