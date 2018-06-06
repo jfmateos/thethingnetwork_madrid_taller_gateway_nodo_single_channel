@@ -1,3 +1,3 @@
-Gateway/TTGO_ESP32_v1/ESP-1ch-Gateway-v5.0_ESP32/ESP-sc-gway/config.h
-Nodo/TTGO_ESP32_v1/ttn-otaa/config.h
 Nodo/TTGO_ESP32_v1/ttn-otaa/Release/
+Nodo/TTGO_ESP32_v1/ttn-abp/Release/
+**/config.h

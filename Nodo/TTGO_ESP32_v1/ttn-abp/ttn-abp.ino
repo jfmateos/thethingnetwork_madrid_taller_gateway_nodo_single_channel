@@ -44,6 +44,7 @@
 U8X8_SSD1306_128X64_NONAME_SW_I2C u8x8 (/* clock=*/ 15, /* data=*/ 4, /* reset=*/ 16);
 #endif // OLED
 
+#if 1
 // LoRaWAN NwkSKey, network session key
 // This is the default Semtech key, which is used by the early prototype TTN
 // network.
@@ -58,6 +59,9 @@ static const u1_t PROGMEM APPSKEY[16] = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x
 
 // LoRaWAN end-device address (DevAddr)
 static const u4_t DEVADDR = 0x26000000; //0x05FF0001 ; // <-- Change this address for every node!
+#else
+#include "config.h"
+#endif
 
 // These callbacks are only used in over-the-air activation, so they are
 // left empty here (we cannot leave them out completely unless
