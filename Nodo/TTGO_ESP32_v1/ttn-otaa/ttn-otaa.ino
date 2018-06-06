@@ -85,7 +85,7 @@ void onEvent (ev_t ev) {
 	u8x8.setCursor (0, 3);
 	u8x8.printf ("%0x", LMIC.devaddr);
 	u8x8.setCursor (0, 5);
-	u8x8.printf ("TIME %lu", os_getTime ());
+	u8x8.printf ("RSSI %d SNR: %d", LMIC.rssi, LMIC.snr);
 #endif //OLED
 	Serial.print(": ");
     switch(ev) {
@@ -221,13 +221,20 @@ void onEvent (ev_t ev) {
 #endif //OLED
 			break;
         case EV_LINK_ALIVE:
-            Serial.println(F("EV_LINK_ALIVE "+ev));
+            Serial.println(F("EV_LINK_ALIVE "));
 #ifdef OLED
 			u8x8.drawString (0, 7, "EV_LINK_ALIVE");
 #endif //OLED
 			break;
+		case EV_TXSTART:
+			Serial.println (F("EV_TXSTART "));
+#ifdef OLED
+			//u8x8.drawString (0, 7, "EV_TXSTART   ");
+#endif //OLED
+			break;
          default:
-            Serial.println(F("Unknown event"));
+            Serial.print(F("Unknown event: "));
+			Serial.println (ev);
 #ifdef OLED
 			u8x8.printf ("UNKNOWN EVENT %d", ev);
 #endif //OLED
