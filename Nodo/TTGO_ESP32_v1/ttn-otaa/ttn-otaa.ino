@@ -80,128 +80,129 @@ void onLmicEvent (ev_t ev) {
 	u8x8.setCursor (0, 5);
 	u8x8.printf ("RSSI %d SNR: %d", LMIC.rssi, LMIC.snr);
 #endif //OLED
-    switch(ev) {
-        case EV_SCAN_TIMEOUT:
+	switch (ev) {
+	case EV_SCAN_TIMEOUT:
 #ifdef OLED
-			u8x8.drawString (0, 7, "EV_SCAN_TIMEOUT");
+		u8x8.drawString (0, 7, "EV_SCAN_TIMEOUT");
 #endif //OLED
-			break;
-        case EV_BEACON_FOUND:
+		break;
+	case EV_BEACON_FOUND:
 #ifdef OLED
-			u8x8.drawString (0, 7, "EV_BEACON_FOUND");
+		u8x8.drawString (0, 7, "EV_BEACON_FOUND");
 #endif //OLED
-			break;
-        case EV_BEACON_MISSED:
+		break;
+	case EV_BEACON_MISSED:
 #ifdef OLED
-			u8x8.drawString (0, 7, "EV_BEACON_MISSED");
+		u8x8.drawString (0, 7, "EV_BEACON_MISSED");
 #endif //OLED
-			break;
-        case EV_BEACON_TRACKED:
+		break;
+	case EV_BEACON_TRACKED:
 #ifdef OLED
-			u8x8.drawString (0, 7, "EV_BEACON_TRACKED");
+		u8x8.drawString (0, 7, "EV_BEACON_TRACKED");
 #endif //OLED
-			break;
-        case EV_JOINING:
+		break;
+	case EV_JOINING:
 #ifdef OLED
-			u8x8.drawString (0, 7, "EV_JOINING    ");
+		u8x8.drawString (0, 7, "EV_JOINING    ");
 #endif //OLED
-			break;
-        case EV_JOINED:
+		break;
+	case EV_JOINED:
 #ifdef OLED
-			u8x8.drawString (0, 7, "EV_JOINED     ");
+		u8x8.drawString (0, 7, "EV_JOINED     ");
 #endif //OLED
-            break;
-        case EV_RFU1:
+		break;
+	case EV_RFU1:
 #ifdef OLED
-			u8x8.drawString (0, 7, "EV_RFUI");
+		u8x8.drawString (0, 7, "EV_RFUI");
 #endif //OLED
-			break;
-        case EV_JOIN_FAILED:
+		break;
+	case EV_JOIN_FAILED:
 #ifdef OLED
-			u8x8.drawString (0, 7, "EV_JOIN_FAILED");
+		u8x8.drawString (0, 7, "EV_JOIN_FAILED");
 #endif //OLED
-			break;
-        case EV_REJOIN_FAILED:
+		break;
+	case EV_REJOIN_FAILED:
 #ifdef OLED
-			u8x8.drawString (0, 7, "EV_REJOIN_FAILED");
+		u8x8.drawString (0, 7, "EV_REJOIN_FAILED");
 #endif //OLED
-			break;
-        case EV_TXCOMPLETE:
+		break;
+	case EV_TXCOMPLETE:
 #ifdef OLED
-			u8x8.drawString (0, 7, "EV_TXCOMPLETE");
+		u8x8.drawString (0, 7, "EV_TXCOMPLETE");
 #endif //OLED
-            // Schedule next transmission
-            //os_setTimedCallback(&sendjob, os_getTime()+sec2osticks(TX_INTERVAL), do_send);
-            break;
-        case EV_LOST_TSYNC:
+		// Schedule next transmission
+		os_setTimedCallback(&sendjob, os_getTime()+sec2osticks(TX_INTERVAL), do_send);
+		break;
+	case EV_LOST_TSYNC:
 #ifdef OLED
-			u8x8.drawString (0, 7, "EV_LOST_TSYNC");
+		u8x8.drawString (0, 7, "EV_LOST_TSYNC");
 #endif //OLED
-			break;
-        case EV_RESET:
+		break;
+	case EV_RESET:
 #ifdef OLED
-			u8x8.drawString (0, 7, "EV_RESET");
+		u8x8.drawString (0, 7, "EV_RESET");
 #endif //OLED
-			break;
-        case EV_RXCOMPLETE:
-            // data received in ping slot
+		break;
+	case EV_RXCOMPLETE:
+		// data received in ping slot
 #ifdef OLED
-			u8x8.drawString (0, 7, "EV_RXCOMPLETE");
+		u8x8.drawString (0, 7, "EV_RXCOMPLETE");
 #endif //OLED
-			break;
-        case EV_LINK_DEAD:
+		break;
+	case EV_LINK_DEAD:
 #ifdef OLED
-			u8x8.drawString (0, 7, "EV_LINK_DEAD");
+		u8x8.drawString (0, 7, "EV_LINK_DEAD");
 #endif //OLED
-			break;
-        case EV_LINK_ALIVE:
+		break;
+	case EV_LINK_ALIVE:
 #ifdef OLED
-			u8x8.drawString (0, 7, "EV_LINK_ALIVE");
+		u8x8.drawString (0, 7, "EV_LINK_ALIVE");
 #endif //OLED
-			break;
-		case EV_TXSTART:
+		break;
+	case EV_TXSTART:
 #ifdef OLED
-			//u8x8.drawString (0, 7, "EV_TXSTART   ");
+		//u8x8.drawString (0, 7, "EV_TXSTART   ");
 #endif //OLED
-			break;
-         default:
+		break;
+	default:
 #ifdef OLED
-			u8x8.printf ("UNKNOWN EVENT %d", ev);
+		u8x8.printf ("UNKNOWN EVENT %d", ev);
 #endif //OLED
-			break;
-    }
-}
-
-void do_send(osjob_t* j){
-    // Check if there is not a current TX/RX job running
-    if (LMIC.opmode & OP_TXRXPEND) {
-        Serial.println(F("OP_TXRXPEND, not sending"));
-	} else {
-        // Prepare upstream data transmission at the next possible time.
-        LMIC_setTxData2(1, mydata, sizeof(mydata)-1, 0);
-        Serial.println(F("Packet queued"));
+		break;
 	}
-    // Next TX is scheduled after TX_COMPLETE event.
 }
 
-void setup() {
-    Serial.begin(115200);
-    Serial.println(F("Starting"));
+void do_send (osjob_t* j) {
+	// Check if there is not a current TX/RX job running
+	if (LMIC.opmode & OP_TXRXPEND) {
+		Serial.println (F ("OP_TXRXPEND, not sending"));
+	}
+	else {
+		// Prepare upstream data transmission at the next possible time.
+		LMIC_setTxData2 (1, mydata, sizeof (mydata) - 1, 0);
+		Serial.println (F ("Packet queued"));
+	}
+	// Next TX is scheduled after TX_COMPLETE event.
+}
 
-    #ifdef VCC_ENABLE
-    // For Pinoccio Scout boards
-    pinMode(VCC_ENABLE, OUTPUT);
-    digitalWrite(VCC_ENABLE, HIGH);
-    delay(1000);
-    #endif
+void setup () {
+	Serial.begin (115200);
+	Serial.println (F ("Starting"));
+
+#ifdef VCC_ENABLE
+	// For Pinoccio Scout boards
+	pinMode (VCC_ENABLE, OUTPUT);
+	digitalWrite (VCC_ENABLE, HIGH);
+	delay (1000);
+#endif
 
 	TtnOtaa.setEventHandler (onLmicEvent);
-	TtnOtaa.begin ();
+	TtnOtaa.begin (APPEUI, DEVEUI, APPKEY);
 
 	// Start job (sending automatically starts OTAA too)
-    do_send(&sendjob);
+	do_send (&sendjob);
 }
 
-void loop() {
-    os_runloop_once();
+void loop () {
+	os_runloop_once ();
 }

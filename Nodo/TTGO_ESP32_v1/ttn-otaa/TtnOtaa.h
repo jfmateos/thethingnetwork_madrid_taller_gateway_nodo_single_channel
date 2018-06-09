@@ -38,7 +38,7 @@ class TTNotaa
 	 
 
  public:
-	void begin();
+	void begin(const u1_t appeui[8], const u1_t deveui[8], const u1_t appkey[16]);
 	void onEvent (ev_t ev);
 	void setEventHandler (onLMICEvent_t handler);
 	u1_t PROGMEM APPEUI[8];

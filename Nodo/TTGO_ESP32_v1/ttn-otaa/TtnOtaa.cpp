@@ -17,8 +17,11 @@ const lmic_pinmap lmic_pins = {
 	.dio = {/*dio0*/ 26, /*dio1*/ 33, /*dio2*/ 32 }
 };
 
-void TTNotaa::begin()
+void TTNotaa::begin(const u1_t appeui[8], const u1_t deveui[8], const u1_t appkey[16])
 {
+	memcpy_P (TtnOtaa.APPEUI, appeui, 8);
+	memcpy_P (TtnOtaa.DEVEUI, deveui, 8);
+	memcpy_P (TtnOtaa.APPKEY, appkey, 16);
 	// LMIC init
 	os_init ();
 	// Reset the MAC state. Session and pending data transfers will be discarded.
