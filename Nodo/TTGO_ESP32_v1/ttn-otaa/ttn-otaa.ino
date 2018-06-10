@@ -84,45 +84,29 @@ void onLmicEvent (ev_t ev) {
 	case EV_SCAN_TIMEOUT:
 #ifdef OLED
 		u8x8.drawString (0, 7, "EV_SCAN_TIMEOUT");
-#endif //OLED
 		break;
 	case EV_BEACON_FOUND:
-#ifdef OLED
 		u8x8.drawString (0, 7, "EV_BEACON_FOUND");
-#endif //OLED
 		break;
 	case EV_BEACON_MISSED:
-#ifdef OLED
 		u8x8.drawString (0, 7, "EV_BEACON_MISSED");
-#endif //OLED
 		break;
 	case EV_BEACON_TRACKED:
-#ifdef OLED
 		u8x8.drawString (0, 7, "EV_BEACON_TRACKED");
-#endif //OLED
 		break;
 	case EV_JOINING:
-#ifdef OLED
 		u8x8.drawString (0, 7, "EV_JOINING    ");
-#endif //OLED
 		break;
 	case EV_JOINED:
-#ifdef OLED
 		u8x8.drawString (0, 7, "EV_JOINED     ");
-#endif //OLED
 		break;
 	case EV_RFU1:
-#ifdef OLED
 		u8x8.drawString (0, 7, "EV_RFUI");
-#endif //OLED
 		break;
 	case EV_JOIN_FAILED:
-#ifdef OLED
 		u8x8.drawString (0, 7, "EV_JOIN_FAILED");
-#endif //OLED
 		break;
 	case EV_REJOIN_FAILED:
-#ifdef OLED
 		u8x8.drawString (0, 7, "EV_REJOIN_FAILED");
 #endif //OLED
 		break;
@@ -136,36 +120,24 @@ void onLmicEvent (ev_t ev) {
 	case EV_LOST_TSYNC:
 #ifdef OLED
 		u8x8.drawString (0, 7, "EV_LOST_TSYNC");
-#endif //OLED
 		break;
 	case EV_RESET:
-#ifdef OLED
 		u8x8.drawString (0, 7, "EV_RESET");
-#endif //OLED
 		break;
 	case EV_RXCOMPLETE:
 		// data received in ping slot
-#ifdef OLED
 		u8x8.drawString (0, 7, "EV_RXCOMPLETE");
-#endif //OLED
 		break;
 	case EV_LINK_DEAD:
-#ifdef OLED
 		u8x8.drawString (0, 7, "EV_LINK_DEAD");
-#endif //OLED
 		break;
 	case EV_LINK_ALIVE:
-#ifdef OLED
 		u8x8.drawString (0, 7, "EV_LINK_ALIVE");
-#endif //OLED
 		break;
 	case EV_TXSTART:
-#ifdef OLED
 		//u8x8.drawString (0, 7, "EV_TXSTART   ");
-#endif //OLED
 		break;
 	default:
-#ifdef OLED
 		u8x8.printf ("UNKNOWN EVENT %d", ev);
 #endif //OLED
 		break;
@@ -176,6 +148,14 @@ void do_send (osjob_t* j) {
 	int result = TtnOtaa.requestSendData (mydata, sizeof (mydata) - 1);
 	Serial.print ("Send request result: ");
 	Serial.println (result);
+}
+
+void downlink (uint8_t *buffer, uint8_t len) {
+	Serial.println ("Datos recibidos");
+	for (int i = 0; i < len; i++) {
+		Serial.print (buffer[i]);
+	}
+	Serial.println ();
 }
 
 void setup () {
@@ -189,6 +169,7 @@ void setup () {
 #endif //OLED
 
 	TtnOtaa.setEventHandler (onLmicEvent);
+	TtnOtaa.setDownlinkHandler (downlink);
 	TtnOtaa.begin (APPEUI, DEVEUI, APPKEY);
 
 	// Start job (sending automatically starts OTAA too)

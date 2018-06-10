@@ -118,6 +118,17 @@ void TTNotaa::onEvent (ev_t ev) {
 			Serial.print (F ("Received "));
 			Serial.print (LMIC.dataLen);
 			Serial.println (F (" bytes of payload"));
+			Serial.print ("Received data: ");
+			uint8_t *buff = LMIC.frame + LMIC.dataBeg;
+			for (int i = 0; i < LMIC.dataLen; i++) {
+				Serial.print ((char)buff[i]);
+			}
+			Serial.println ();
+			if (onDownlinkData) {
+				uint8_t *buffer;
+				memcpy (buffer, buff, LMIC.dataLen);
+				onDownlinkData (buffer, LMIC.dataLen);
+			}
 		}
 		// Schedule next transmission
 		// os_setTimedCallback (&sendjob, os_getTime () + sec2osticks (TX_INTERVAL), do_send);
@@ -155,9 +166,9 @@ void TTNotaa::setEventHandler (onLMICEvent_t handler) {
 	throwEvent = handler;
 }
 
-void TTNotaa::setUplinkHandler (onUplinkData_t handler)
+void TTNotaa::setDownlinkHandler (onDownlinkData_t handler)
 {
-	onUplinkData = handler;
+	onDownlinkData = handler;
 }
 
 int TTNotaa::requestSendData (uint8_t * data, uint8_t len)
