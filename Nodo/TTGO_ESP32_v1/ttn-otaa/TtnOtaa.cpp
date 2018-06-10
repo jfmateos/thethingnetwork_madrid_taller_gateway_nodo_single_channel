@@ -4,9 +4,9 @@
 
 #include "TtnOtaa.h"
 
-void os_getArtEui (u1_t* buf) { memcpy_P (buf, TtnOtaa.APPEUI, 8); }
-void os_getDevEui (u1_t* buf) { memcpy_P (buf, TtnOtaa.DEVEUI, 8); }
-void os_getDevKey (u1_t* buf) { memcpy_P (buf, TtnOtaa.APPKEY, 16); }
+void os_getArtEui (u1_t* buf) { memcpy_P (buf, TtnOtaa.appeui, 8); }
+void os_getDevEui (u1_t* buf) { memcpy_P (buf, TtnOtaa.deveui, 8); }
+void os_getDevKey (u1_t* buf) { memcpy_P (buf, TtnOtaa.appkey, 16); }
 void onEvent (ev_t ev) { TtnOtaa.onEvent (ev); }
 
 // Pin mapping for TTGO ESP32 v1
@@ -19,9 +19,9 @@ const lmic_pinmap lmic_pins = {
 
 void TTNotaa::begin(const u1_t appeui[8], const u1_t deveui[8], const u1_t appkey[16])
 {
-	memcpy_P (TtnOtaa.APPEUI, appeui, 8);
-	memcpy_P (TtnOtaa.DEVEUI, deveui, 8);
-	memcpy_P (TtnOtaa.APPKEY, appkey, 16);
+	memcpy_P (TtnOtaa.appeui, appeui, 8);
+	memcpy_P (TtnOtaa.deveui, deveui, 8);
+	memcpy_P (TtnOtaa.appkey, appkey, 16);
 	// LMIC init
 	os_init ();
 	// Reset the MAC state. Session and pending data transfers will be discarded.
@@ -42,6 +42,8 @@ void TTNotaa::begin(const u1_t appeui[8], const u1_t deveui[8], const u1_t appke
 
 	// Set data rate and transmit power for uplink (note: txpow seems to be ignored by the library)
 	LMIC_setDrTxpow (DR_SF7, 14);
+	static uint8_t mydata[] = "connect";
+	requestSendData (mydata, sizeof (mydata) - 1);
 }
 
 void TTNotaa::onEvent (ev_t ev) {
@@ -82,7 +84,7 @@ void TTNotaa::onEvent (ev_t ev) {
 			}
 			Serial.println ("");
 
-			LMIC_setSeqnoUp (1);
+			LMIC_setSeqnoUp (0);
 		}
 		// Disable link check validation (automatically enabled
 		// during join, but not supported by TTN at this time).
@@ -151,6 +153,22 @@ void TTNotaa::onEvent (ev_t ev) {
 
 void TTNotaa::setEventHandler (onLMICEvent_t handler) {
 	throwEvent = handler;
+}
+
+int TTNotaa::requestSendData (uint8_t * data, uint8_t len)
+{
+	int result = 0;
+	// Check if there is not a current TX/RX job running
+	if (LMIC.opmode & OP_TXRXPEND) {
+		Serial.println (F ("OP_TXRXPEND, not sending"));
+		result = -1;
+	}
+	else {
+		// Prepare upstream data transmission at the next possible time.
+		result = LMIC_setTxData2 (1, data, len, 0);
+		Serial.println (F ("Packet queued"));
+	}
+	return result;
 }
 
 TTNotaa TtnOtaa;

@@ -38,12 +38,20 @@ class TTNotaa
 	 
 
  public:
-	void begin(const u1_t appeui[8], const u1_t deveui[8], const u1_t appkey[16]);
+	u1_t PROGMEM appeui[8];
+	u1_t PROGMEM deveui[8];
+	u1_t PROGMEM appkey[16];
+
+	void begin (const u1_t appeui[8], const u1_t deveui[8], const u1_t appkey[16]);
 	void onEvent (ev_t ev);
 	void setEventHandler (onLMICEvent_t handler);
-	u1_t PROGMEM APPEUI[8];
-	u1_t PROGMEM DEVEUI[8];
-	u1_t PROGMEM APPKEY[16];
+
+	// request data delivery to TTN
+	// returns	 0 if OK, 
+	//			-1 if transaction pending
+	//			-2 if too much data
+	int requestSendData (uint8_t *data, uint8_t len);
+
 };
 
 extern TTNotaa TtnOtaa;

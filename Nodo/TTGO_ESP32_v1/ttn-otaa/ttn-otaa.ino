@@ -66,7 +66,7 @@ static osjob_t sendjob;
 // cycle limitations).
 const unsigned TX_INTERVAL = 60;
 
-//#define OLED
+#define OLED
 
 #ifdef OLED
 // the OLED used
@@ -173,34 +173,26 @@ void onLmicEvent (ev_t ev) {
 }
 
 void do_send (osjob_t* j) {
-	// Check if there is not a current TX/RX job running
-	if (LMIC.opmode & OP_TXRXPEND) {
-		Serial.println (F ("OP_TXRXPEND, not sending"));
-	}
-	else {
-		// Prepare upstream data transmission at the next possible time.
-		LMIC_setTxData2 (1, mydata, sizeof (mydata) - 1, 0);
-		Serial.println (F ("Packet queued"));
-	}
-	// Next TX is scheduled after TX_COMPLETE event.
+	int result = TtnOtaa.requestSendData (mydata, sizeof (mydata) - 1);
+	Serial.print ("Send request result: ");
+	Serial.println (result);
 }
 
 void setup () {
 	Serial.begin (115200);
 	Serial.println (F ("Starting"));
 
-#ifdef VCC_ENABLE
-	// For Pinoccio Scout boards
-	pinMode (VCC_ENABLE, OUTPUT);
-	digitalWrite (VCC_ENABLE, HIGH);
-	delay (1000);
-#endif
+#ifdef OLED
+	u8x8.begin ();
+	u8x8.setFont (u8x8_font_chroma48medium8_r);
+	u8x8.drawString (0, 1, "LoRaWAN LMiC");
+#endif //OLED
 
 	TtnOtaa.setEventHandler (onLmicEvent);
 	TtnOtaa.begin (APPEUI, DEVEUI, APPKEY);
 
 	// Start job (sending automatically starts OTAA too)
-	do_send (&sendjob);
+	//do_send (&sendjob);
 }
 
 void loop () {
