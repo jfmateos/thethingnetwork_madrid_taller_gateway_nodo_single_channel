@@ -17,7 +17,7 @@ const lmic_pinmap lmic_pins = {
 	.dio = {/*dio0*/ 26, /*dio1*/ 33, /*dio2*/ 32 }
 };
 
-void TTNotaa::begin(const u1_t appeui[8], const u1_t deveui[8], const u1_t appkey[16])
+void TTNotaa::begin (const u1_t appeui[8], const u1_t deveui[8], const u1_t appkey[16])
 {
 	memcpy_P (TtnOtaa.appeui, appeui, 8);
 	memcpy_P (TtnOtaa.deveui, deveui, 8);
@@ -74,12 +74,12 @@ void TTNotaa::onEvent (ev_t ev) {
 			Serial.print ("devaddr: ");
 			Serial.println (devaddr, HEX);
 			Serial.print ("artKey: ");
-			for (int i = 0; i<sizeof (artKey); ++i) {
+			for (int i = 0; i < sizeof (artKey); ++i) {
 				Serial.print (artKey[i], HEX);
 			}
 			Serial.println ("");
 			Serial.print ("nwkKey: ");
-			for (int i = 0; i<sizeof (nwkKey); ++i) {
+			for (int i = 0; i < sizeof (nwkKey); ++i) {
 				Serial.print (nwkKey[i], HEX);
 			}
 			Serial.println ("");
@@ -153,6 +153,11 @@ void TTNotaa::onEvent (ev_t ev) {
 
 void TTNotaa::setEventHandler (onLMICEvent_t handler) {
 	throwEvent = handler;
+}
+
+void TTNotaa::setUplinkHandler (onUplinkData_t handler)
+{
+	onUplinkData = handler;
 }
 
 int TTNotaa::requestSendData (uint8_t * data, uint8_t len)

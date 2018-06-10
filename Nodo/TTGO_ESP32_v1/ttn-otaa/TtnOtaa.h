@@ -22,8 +22,10 @@ void os_getDevKey (u1_t* buf);
 #if defined ARDUINO_ARCH_ESP8266 || defined ARDUINO_ARCH_ESP32
 #include <functional>
 typedef std::function<void (ev_t)> onLMICEvent_t;
+typedef std::function<uint8_t (*uint8_t)> onUplinkData_t;
 #else
 typedef void (*onLMICEvent_t)(ev_t);
+typedef uint8_t (*onUplinkData_t)(*uint8_t);
 #endif
 
 class TTNotaa
@@ -35,6 +37,7 @@ class TTNotaa
 	 u1_t artKey[16];
 
 	 onLMICEvent_t throwEvent = NULL;
+	 onUplinkData_t onUplinkData = NULL;
 	 
 
  public:
@@ -45,6 +48,7 @@ class TTNotaa
 	void begin (const u1_t appeui[8], const u1_t deveui[8], const u1_t appkey[16]);
 	void onEvent (ev_t ev);
 	void setEventHandler (onLMICEvent_t handler);
+	void setUplinkHandler (onUplinkData_t handler);
 
 	// request data delivery to TTN
 	// returns	 0 if OK, 
