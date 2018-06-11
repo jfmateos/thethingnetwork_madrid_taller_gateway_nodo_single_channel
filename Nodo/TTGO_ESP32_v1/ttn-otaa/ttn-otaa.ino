@@ -153,9 +153,10 @@ void do_send (osjob_t* j) {
 void downlink (uint8_t *buffer, uint8_t len) {
 	Serial.println ("Datos recibidos");
 	for (int i = 0; i < len; i++) {
-		Serial.print (buffer[i]);
+		Serial.print ((char)buffer[i]);
 	}
 	Serial.println ();
+	free (buffer);
 }
 
 void setup () {

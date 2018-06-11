@@ -98,7 +98,7 @@ void TTNotaa::onEvent (ev_t ev) {
 		LMIC_setupChannel (6, 868100000, DR_RANGE_MAP (DR_SF12, DR_SF7), BAND_CENTI);      // g-band
 		LMIC_setupChannel (7, 868100000, DR_RANGE_MAP (DR_SF12, DR_SF7), BAND_CENTI);      // g-band
 		LMIC_setupChannel (8, 868100000, DR_RANGE_MAP (DR_SF12, DR_SF7), BAND_CENTI);      // g2-band
-
+		LMIC.dn2Dr = DR_SF9;
 		break;
 	case EV_RFU1:
 		Serial.println (F ("EV_RFU1"));
@@ -125,8 +125,8 @@ void TTNotaa::onEvent (ev_t ev) {
 			}
 			Serial.println ();
 			if (onDownlinkData) {
-				uint8_t *buffer;
-				memcpy (buffer, buff, LMIC.dataLen);
+				uint8_t *buffer = (uint8_t*)malloc(LMIC.dataLen);
+				memcpy_P (buffer, buff, LMIC.dataLen);
 				onDownlinkData (buffer, LMIC.dataLen);
 			}
 		}
