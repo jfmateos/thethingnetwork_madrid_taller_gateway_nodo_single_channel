@@ -1,0 +1,9 @@
+**/config.h
+*.sln
+*.vcxproj
+*.filters
+*.user
+**/.vs
+**/__vm
+**/Release
+**/Debug/
