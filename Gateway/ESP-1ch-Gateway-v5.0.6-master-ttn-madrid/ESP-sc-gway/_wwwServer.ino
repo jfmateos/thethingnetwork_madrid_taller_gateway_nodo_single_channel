@@ -1000,7 +1000,11 @@ void setupWWW()
 	// may take too much time to serve all information before a next
 	// package interrupt arrives at the gateway
 	
-	Serial.print(F("WWW Server started on port "));
+	String MyIp =  String(WiFi.localIP()[0]) + "." + String(WiFi.localIP()[1]) + "." + String(WiFi.localIP()[2]) + "." + String(WiFi.localIP()[3]);
+
+	Serial.print(F("WWW Server started at http://"));
+	Serial.print(MyIp);
+	Serial.print(F(":"));
 	Serial.println(A_SERVERPORT);
 	return;
 }
