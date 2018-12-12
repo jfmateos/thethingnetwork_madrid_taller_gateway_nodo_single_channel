@@ -1105,8 +1105,6 @@ void setup() {
   char MAC_char[19];								// XXX Unbelievable
   MAC_char[18] = 0;
 
-
-
   Serial.begin(_BAUDRATE);						// As fast as possible for bus
   delay(100);
   Serial.flush();
@@ -1168,6 +1166,11 @@ void setup() {
   Serial.print(F(" WiFi Connected to "));
   Serial.print(WiFi.SSID());
   Serial.println();
+
+  String MyIp =  String(WiFi.localIP()[0]) + "." + String(WiFi.localIP()[1]) + "." + String(WiFi.localIP()[2]) + "." + String(WiFi.localIP()[3]);
+  Serial.print(F("IP: "));
+  Serial.println(MyIp);
+
   delay(200);
 
   // If we are here we are connected to WLAN
