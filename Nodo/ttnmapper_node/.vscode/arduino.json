@@ -1,0 +1,6 @@
+{
+    "sketch": "ttnmapper_node.ino",
+    "board": "MiniCore:avr:328",
+    "configuration": "bootloader=true,variant=modelP,BOD=1v8,LTO=Os,clock=8MHz_external",
+    "port": "/dev/ttyUSB1"
+}
