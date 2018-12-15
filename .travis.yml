@@ -3,11 +3,6 @@ sudo: false
 language: generic
 #language: c
 
-# safelist
-branches:
-  only:
-  - ci
-
 cache:
   directories:
     - ~/arduino_ide
