@@ -1,0 +1,21 @@
+language: c
+sudo: false
+cache:
+  directories:
+    - ~/arduino_ide
+    - ~/arduino-mk
+    - ~/.arduino15/packages/
+git:
+  depth: false
+  quiet: true
+env:
+  global:
+     - ARDUINO_IDE_VERSION="1.8.6"
+before_install:
+  - source $TRAVIS_BUILD_DIR/install_env.sh
+script:
+  - make -C Nodo/ttnmapper_node
+notifications:
+  email:
+    on_success: change
+    on_failure: change
