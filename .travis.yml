@@ -1,5 +1,7 @@
-language: c
+dist: trusty
 sudo: false
+language: generic
+#language: c
 
 # safelist
 branches:

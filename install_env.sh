@@ -27,7 +27,7 @@ if [ ! -f $HOME/arduino_ide/arduino ]; then
    wget https://downloads.arduino.cc/arduino-$ARDUINO_IDE_VERSION-linux64.tar.xz
    echo "UNPACKING ARDUINO IDE: "
    [ ! -d $HOME/arduino_ide/ ] && mkdir $HOME/arduino_ide
-   tar xvf arduino-$ARDUINO_IDE_VERSION-linux64.tar.xz -C $HOME/arduino_ide/ --strip-components=1
+   tar xf arduino-$ARDUINO_IDE_VERSION-linux64.tar.xz -C $HOME/arduino_ide/ --strip-components=1
    rm arduino-$ARDUINO_IDE_VERSION-linux64.tar.xz
    touch $HOME/arduino_ide/$ARDUINO_IDE_VERSION
 fi
