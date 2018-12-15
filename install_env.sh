@@ -33,7 +33,7 @@ if [ ! -f $HOME/arduino_ide/arduino ]; then
 fi
 
 cd 
-git clone https://github.com/sudar/Arduino-Makefile.git arduino-mk
+[ ! -d arduino-mk ] && git clone https://github.com/sudar/Arduino-Makefile.git arduino-mk
 
 export PATH="$HOME/arduino_ide:$HOME/arduino-mk/bin:$PATH"
 
