@@ -27,13 +27,13 @@ if [ ! -f $HOME/arduino_ide/arduino ]; then
    wget https://downloads.arduino.cc/arduino-$ARDUINO_IDE_VERSION-linux64.tar.xz
    echo "UNPACKING ARDUINO IDE: "
    [ ! -d $HOME/arduino_ide/ ] && mkdir $HOME/arduino_ide
-   tar xvf arduino-$ARDUINO_IDE_VERSION-linux64.tar.xz -C $HOME/arduino_ide/ --strip-components=1
+   tar xf arduino-$ARDUINO_IDE_VERSION-linux64.tar.xz -C $HOME/arduino_ide/ --strip-components=1
    rm arduino-$ARDUINO_IDE_VERSION-linux64.tar.xz
    touch $HOME/arduino_ide/$ARDUINO_IDE_VERSION
 fi
 
 cd 
-git clone https://github.com/sudar/Arduino-Makefile.git arduino-mk
+[ ! -d arduino-mk ] && git clone https://github.com/sudar/Arduino-Makefile.git arduino-mk
 
 export PATH="$HOME/arduino_ide:$HOME/arduino-mk/bin:$PATH"
 
@@ -54,8 +54,18 @@ echo "ADD PACKAGE INDEX: "
 arduino --pref "boardsmanager.additional.urls=http://arduino.esp8266.com/stable/package_esp8266com_index.json,https://mcudude.github.io/MiniCore/package_MCUdude_MiniCore_index.json" --save-prefs
 
 echo "ESP8266:"
-arduino --install-boards esp8266:esp8266
-chmod +x /home/travis/.arduino15/packages/esp8266/hardware/esp8266/2.5.0-beta1/tools/signing.py
+if [ ! -f /home/travis/.arduino15/package_esp8266com_index.json ]
+then
+   arduino --install-boards esp8266:esp8266
+   chmod +x /home/travis/.arduino15/packages/esp8266/hardware/esp8266/2.5.0-beta1/tools/signing.py
+else
+   echo "CACHED"
+fi
 
 echo "MiniCore:"
-arduino --install-boards MiniCore:avr
+if [ ! -f /home/travis/.arduino15/package_MCUdude_MiniCore_index.json ]
+then
+   arduino --install-boards MiniCore:avr
+else
+   echo "CACHED"
+fi

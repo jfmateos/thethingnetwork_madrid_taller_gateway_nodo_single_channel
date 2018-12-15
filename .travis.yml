@@ -1,10 +1,7 @@
-language: c
+dist: trusty
 sudo: false
-
-# safelist
-branches:
-  only:
-  - ci
+language: generic
+#language: c
 
 cache:
   directories:
@@ -20,8 +17,8 @@ env:
   global:
      - ARDUINO_IDE_VERSION="1.8.6"
 
-before_install:
-  - source $TRAVIS_BUILD_DIR/install_env.sh
+install:
+  - ./install_env.sh
 
 script:
   - make -C Nodo/ttnmapper_node
