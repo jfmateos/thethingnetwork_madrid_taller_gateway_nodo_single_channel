@@ -7,10 +7,10 @@ ARDUINO_LIBS=\
   IBM_LMIC_framework\
   Low-Power
 
-ARDUINO_DIR=~/opt/arduino
-ARDUINO_PLATFORM_LIB_PATH=/home/adumont/.arduino15/packages/MiniCore/hardware/avr/2.0.1/libraries
-ARDUINO_CORE_PATH=/home/adumont/.arduino15/packages/MiniCore/hardware/avr/2.0.1/cores/MCUdude_corefiles
-ARDUINO_VAR_PATH=/home/adumont/.arduino15/packages/MiniCore/hardware/avr/2.0.1/variants
+ARDUINO_DIR:=$(HOME)/arduino_ide
+ARDUINO_PLATFORM_LIB_PATH=$(HOME)/.arduino15/packages/MiniCore/hardware/avr/2.0.1/libraries
+ARDUINO_CORE_PATH=$(HOME)/.arduino15/packages/MiniCore/hardware/avr/2.0.1/cores/MCUdude_corefiles
+ARDUINO_VAR_PATH=$(HOME)/.arduino15/packages/MiniCore/hardware/avr/2.0.1/variants
 VARIANT=standard
 
 CORE = MiniCore
