@@ -20,6 +20,6 @@ MCU=atmega328p
 F_CPU=8000000L
 HEX_MAXIMUM_SIZE=32256
 
-ARDMK_DIR=~/opt/arduino-mk
+ARDMK_DIR=$(HOME)/arduino-mk
 
 include $(ARDMK_DIR)/Arduino.mk
