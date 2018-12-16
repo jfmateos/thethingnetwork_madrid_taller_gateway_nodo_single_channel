@@ -28,6 +28,7 @@ script:
   # The source above can mess our path, let's go back to sources:
   - cd ${TRAVIS_BUILD_DIR}
   # We build all our sketches
+  - make -C Nodo/lora_mini_node_ttn_madrid_abp_puerta_abierta
   - make -C Nodo/ttnmapper_node
 
 notifications:
