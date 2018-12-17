@@ -1,0 +1,38 @@
+dist: trusty
+sudo: false
+language: generic
+#language: c
+
+cache:
+  directories:
+    - ~/opt
+    - ~/Arduino
+    - ~/.arduino15
+
+git:
+  depth: false
+  quiet: true
+
+env:
+  global:
+     - ARDUINO_IDE_VERSION="1.8.6"
+
+install:
+  # We install all the stuff we need
+  - source install_env.sh
+  # Install boards (Version installed must match the BOARD_VERSION in Makefiles)
+  - install_board esp8266:esp8266:2.4.2       # TODO this should go in the sketch Makefile
+  - install_board MiniCore:avr:2.0.1          # TODO this should go in the sketch Makefile
+
+script:
+  # The source above can mess our path, let's go back to sources:
+  - cd ${TRAVIS_BUILD_DIR}
+  # We build all our sketches
+  - make -C Nodo/lora_mini_node_ttn_madrid_abp_puerta_abierta
+  - make -C Nodo/ttnmapper_node
+  - make -C Gateway/ESP-1ch-Gateway-v5.0.6-master-ttn-madrid/ESP-sc-gway
+
+notifications:
+  email:
+    on_success: change
+    on_failure: change
