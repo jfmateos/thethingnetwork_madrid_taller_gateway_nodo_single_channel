@@ -14,5 +14,4 @@ all:
 		-libraries ../../libraries \
 		-fqbn=esp8266:esp8266:d1_mini:CpuFrequency=80,VTable=flash,FlashSize=4M1M,LwIPVariant=v2mss536,Debug=Disabled,DebugLevel=None____,FlashErase=sdk,UploadSpeed=921600 \
 		-ide-version=10806 \
-		-verbose \
 		$(INO_FILE)

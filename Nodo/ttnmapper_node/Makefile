@@ -16,5 +16,4 @@ all:
 		-ide-version=10806 \
 		-warnings=all \
 		-prefs=build.warn_data_percentage=75 \
-		-verbose \
 		$(INO_FILE)
