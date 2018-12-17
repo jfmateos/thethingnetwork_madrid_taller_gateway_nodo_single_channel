@@ -14,6 +14,5 @@ all:
 		-libraries ../libraries \
 		-fqbn=MiniCore:avr:328:bootloader=true,variant=modelP,BOD=1v8,LTO=Os,clock=8MHz_external \
 		-ide-version=10806 \
-		-warnings=all \
 		-prefs=build.warn_data_percentage=75 \
 		$(INO_FILE)

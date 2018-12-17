@@ -12,6 +12,7 @@ all:
 		-tools $(HOME)/.arduino15/packages \
 		-built-in-libraries $(ARDUINO_DIR)/libraries \
 		-libraries ../../libraries \
+                -prefs=build.warn_data_percentage=75 \
 		-fqbn=esp8266:esp8266:d1_mini:CpuFrequency=80,VTable=flash,FlashSize=4M1M,LwIPVariant=v2mss536,Debug=Disabled,DebugLevel=None____,FlashErase=sdk,UploadSpeed=921600 \
 		-ide-version=10806 \
 		$(INO_FILE)
