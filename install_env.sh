@@ -1,6 +1,5 @@
 ## This script installs:
 #  - Arduino IDE
-#  - arduino-mk
 #  - Additional boards
 #  Inspired from: https://github.com/adafruit/travis-ci-arduino
 ##
@@ -13,7 +12,6 @@ then
 fi
 
 ARDUINO_DIR=${HOME}/opt/arduino-${ARDUINO_IDE_VERSION}
-ARDMK_DIR=${HOME}/opt/arduino-mk
 
 # if not already cached, download and install arduino IDE
 [ -d ${ARDUINO_DIR} ] || mkdir -p ${ARDUINO_DIR}
@@ -30,14 +28,7 @@ else
    echo "CACHED"
 fi
 
-cd
-echo "Arduino-mk:"
-git clone https://github.com/sudar/Arduino-Makefile.git ${ARDMK_DIR} || true
-cd ${ARDMK_DIR}
-git pull # cache needs update?
-cd
-
-export PATH="${ARDUINO_DIR}:${ARDMK_DIR}/bin:$PATH"
+export PATH="${ARDUINO_DIR}:$PATH"
 
 # make display available for arduino CLI
 /sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_1.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :1 -ac -screen 0 1280x1024x16
@@ -47,7 +38,6 @@ export DISPLAY=:1.0
 echo -e "\n########################################################################";
 echo -e "INSTALLING DEPENDENCIES"
 echo "########################################################################";
-
 
 # install the due, esp8266, and adafruit board packages
 echo "ADD BOARDS PACKAGES INDEX:"
