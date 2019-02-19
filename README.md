@@ -3,5 +3,5 @@
 # Taller TTNMadrid
 
 - Gateway Mono-canal
- -Si no es capaz de compilarlo con Arduino, pruebe a degradar el gestor de placas ESP8266 a la versión 2.4.2
+  - Si no es capaz de compilarlo con Arduino, pruebe a degradar el gestor de placas ESP8266 a la versión 2.4.2
 - Nodo Puerta Abierta
